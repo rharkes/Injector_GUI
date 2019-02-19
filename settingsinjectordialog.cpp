@@ -84,10 +84,13 @@ SettingsInjectorDialog::InjectorSettings SettingsInjectorDialog::settings() cons
 void SettingsInjectorDialog::apply()
 {
     updateSettings();
+    emit settingsInjectorApplyClicked();
     hide();
 }
 
 void SettingsInjectorDialog::updateSettings()
 {
     m_currentSettings.name1 = m_ui->inj1_name->text();
+    m_currentSettings.name2 = m_ui->inj2_name->text();
+    m_currentSettings.name3 = m_ui->inj3_name->text();
 }

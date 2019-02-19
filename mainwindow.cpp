@@ -57,6 +57,7 @@
 
 #include <QLabel>
 #include <QMessageBox>
+#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -79,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui->statusBar->addWidget(m_status);
 
     initActionsConnections();
-
+    connect(m_settingsinjector, &SettingsInjectorDialog::settingsInjectorApplyClicked, this, &MainWindow::updateInjectorNames);
     connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
     connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(m_console, &Console::getData, this, &MainWindow::writeData);
@@ -89,6 +90,7 @@ MainWindow::~MainWindow()
 {
     delete m_settings;
     delete m_settingsinjector;
+    delete m_console;
     delete m_ui;
 }
 
@@ -145,6 +147,7 @@ void MainWindow::readData()
 {
     const QByteArray data = m_serial->readAll();
     m_console->putData(data);
+    lastMessage.append(data);
 }
 
 void MainWindow::handleError(QSerialPort::SerialPortError error)
@@ -168,6 +171,14 @@ void MainWindow::initActionsConnections()
     connect(m_ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 }
 
+void MainWindow::updateInjectorNames(){
+
+    const SettingsInjectorDialog::InjectorSettings p = m_settingsinjector->settings();
+    m_ui->inj1Label->setText(p.name1);
+    m_ui->inj2Label->setText(p.name2);
+    m_ui->inj3Label->setText(p.name3);
+}
+
 void MainWindow::showStatusMessage(const QString &message)
 {
     m_status->setText(message);
@@ -175,39 +186,57 @@ void MainWindow::showStatusMessage(const QString &message)
 
 void MainWindow::on_inj1Button_clicked(bool checked)
 {
-    if (checked){
-        m_ui->inj1Button->setText("Eject");
-        m_ui->inj1ImageLabel->setPixmap(QPixmap(":/images/injector_full.png"));
-        m_ui->inj1Volume->setDisabled(true);
-    } else {
-        m_ui->inj1Button->setText("Take-Up");
-        m_ui->inj1ImageLabel->setPixmap(QPixmap(":/images/injector_empty.png"));
-        m_ui->inj1Volume->setDisabled(false);
-    }
+    //disable button
+    m_ui->inj1Button->setDisabled(true);
+    //send message
+    QByteArray dataIn = *new QByteArray();
+    dataIn = dataIn.fromStdString("1010001\n");
+    sendInjectorMessage(dataIn);
+    //enable and change apperance
+    m_ui->inj1Button->setDisabled(false);
+    changeInjectorApperence(checked, m_ui->inj1Button,m_ui->inj1ImageLabel,m_ui->inj1Volume);
 }
 
 void MainWindow::on_inj2Button_clicked(bool checked)
 {
-    if (checked){
-        m_ui->inj2Button->setText("Eject");
-        m_ui->inj2ImageLabel->setPixmap(QPixmap(":/images/injector_full.png"));
-        m_ui->inj2Volume->setDisabled(true);
-    } else {
-        m_ui->inj2Button->setText("Take-Up");
-        m_ui->inj2ImageLabel->setPixmap(QPixmap(":/images/injector_empty.png"));
-        m_ui->inj2Volume->setDisabled(false);
-    }
+    changeInjectorApperence(checked, m_ui->inj2Button,m_ui->inj2ImageLabel,m_ui->inj2Volume);
 }
 
 void MainWindow::on_inj3Button_clicked(bool checked)
 {
+    changeInjectorApperence(checked, m_ui->inj3Button,m_ui->inj3ImageLabel,m_ui->inj3Volume);
+}
+void MainWindow::sendInjectorMessage(QByteArray dataIn){
+    QByteArray dataOut = dataIn;
+    dataOut.chop(1);
+    dataOut.append("_1\r\n"); //the injector responds with the same message appended with _1 on success
+    //display in the message in the console
+    m_console->putData(dataIn);
+    //clear lastmessage
+    lastMessage.clear();
+    //write the message to the serial port
+    m_serial->write(dataIn);
+    //wait for finish
+    int ct = 0;
+    while (dataOut!=lastMessage&&ct<100){
+        QTime dieTime = QTime::currentTime().addMSecs( 100 );
+        while( QTime::currentTime() < dieTime ) {
+            QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
+        }
+        ct++;
+    }
+    if (dataOut!=lastMessage){
+        //need some sort of error signal
+    }
+}
+void MainWindow::changeInjectorApperence(bool checked, QPushButton *injectorButton, QLabel *injectorPixelLabel, QSpinBox *injectorVolume){
     if (checked){
-        m_ui->inj3Button->setText("Eject");
-        m_ui->inj3ImageLabel->setPixmap(QPixmap(":/images/injector_full.png"));
-        m_ui->inj3Volume->setDisabled(true);
+        injectorButton->setText("Eject");
+        injectorPixelLabel->setPixmap(QPixmap(":/images/injector_full.png"));
+        injectorVolume->setDisabled(true);
     } else {
-        m_ui->inj3Button->setText("Take-Up");
-        m_ui->inj3ImageLabel->setPixmap(QPixmap(":/images/injector_empty.png"));
-        m_ui->inj3Volume->setDisabled(false);
+        injectorButton->setText("Take-Up");
+        injectorPixelLabel->setPixmap(QPixmap(":/images/injector_empty.png"));
+        injectorVolume->setDisabled(false);
     }
 }

@@ -54,6 +54,9 @@
 
 #include <QMainWindow>
 #include <QSerialPort>
+#include <QLabel>
+#include <QPushButton>
+#include <QSpinBox>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,6 +81,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void updateInjectorNames();
     void openSerialPort();
     void closeSerialPort();
     void about();
@@ -93,10 +97,12 @@ private slots:
 
 private:
     void initActionsConnections();
+    QByteArray lastMessage;
 
 private:
     void showStatusMessage(const QString &message);
-
+    void changeInjectorApperence(bool checked, QPushButton *injectorButton, QLabel *injectorPixelLabel, QSpinBox *injectorVolume);
+    void sendInjectorMessage(QByteArray dataIn);
     Ui::MainWindow *m_ui = nullptr;
     QLabel *m_status = nullptr;
     Console *m_console = nullptr;

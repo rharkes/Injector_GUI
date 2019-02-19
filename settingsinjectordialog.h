@@ -87,6 +87,9 @@ public:
 
     InjectorSettings settings() const;
 
+signals:
+    void settingsInjectorApplyClicked();
+
 private slots:
     void apply();
 
