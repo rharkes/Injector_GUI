@@ -56,7 +56,11 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setOrganizationName("Netherlands Cancer Institute");
+    a.setOrganizationDomain("nki.nl");
+    a.setApplicationName("JalinkLabInjector");
     MainWindow w;
     w.show();
+    a.setQuitOnLastWindowClosed(true);
     return a.exec();
 }

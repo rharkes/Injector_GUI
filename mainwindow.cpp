@@ -58,6 +58,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QTime>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -70,7 +71,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     m_ui->setupUi(this);
     m_console->setEnabled(false);
-    //setCentralWidget(m_console);
 
     m_ui->actionConnect->setEnabled(true);
     m_ui->actionDisconnect->setEnabled(false);
@@ -84,10 +84,44 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
     connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(m_console, &Console::getData, this, &MainWindow::writeData);
+    readSettings();
+    const SettingsDialog::Settings p = m_settings->settings();
+    if (p.foundArduino){
+        openSerialPort();
+    }
+}
+
+void MainWindow::writeSettings()
+{
+    QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
+    settings.beginGroup("MainWindow");
+    settings.setValue("volume1",m_ui->inj1Volume->value());
+    settings.setValue("volume2",m_ui->inj2Volume->value());
+    settings.setValue("volume3",m_ui->inj3Volume->value());
+    settings.setValue("name1",m_ui->inj1Label->text());
+    settings.setValue("name2",m_ui->inj2Label->text());
+    settings.setValue("name3",m_ui->inj3Label->text());
+    settings.setValue("pos", pos());
+    settings.endGroup();
+}
+
+void MainWindow::readSettings()
+{
+    QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
+    settings.beginGroup("MainWindow");
+    move(settings.value("pos", QPoint(200, 200)).toPoint());
+    m_ui->inj1Volume->setValue(settings.value("volume1",1).toDouble());
+    m_ui->inj2Volume->setValue(settings.value("volume2",1).toDouble());
+    m_ui->inj3Volume->setValue(settings.value("volume3",1).toDouble());
+    m_ui->inj1Label->setText(settings.value("name1","Forskolin").toString());
+    m_ui->inj1Label->setText(settings.value("name2","IBMX").toString());
+    m_ui->inj1Label->setText(settings.value("name3","Isoproterenol").toString());
+    settings.endGroup();
 }
 
 MainWindow::~MainWindow()
 {
+    writeSettings();
     delete m_settings;
     delete m_settingsinjector;
     delete m_console;
@@ -107,6 +141,9 @@ void MainWindow::openSerialPort()
         m_console->setEnabled(true);
         m_console->setLocalEchoEnabled(p.localEchoEnabled);
         m_ui->actionConnect->setEnabled(false);
+        m_ui->inj1Button->setEnabled(true);
+        m_ui->inj2Button->setEnabled(true);
+        m_ui->inj3Button->setEnabled(true);
         m_ui->actionDisconnect->setEnabled(true);
         m_ui->actionConfigure->setEnabled(false);
         showStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
@@ -125,6 +162,9 @@ void MainWindow::closeSerialPort()
         m_serial->close();
     m_console->setEnabled(false);
     m_ui->actionConnect->setEnabled(true);
+    m_ui->inj1Button->setEnabled(false);
+    m_ui->inj2Button->setEnabled(false);
+    m_ui->inj3Button->setEnabled(false);
     m_ui->actionDisconnect->setEnabled(false);
     m_ui->actionConfigure->setEnabled(true);
     showStatusMessage(tr("Disconnected"));
@@ -186,12 +226,11 @@ void MainWindow::showStatusMessage(const QString &message)
 
 void MainWindow::on_inj1Button_clicked(bool checked)
 {
+    qDebug( "Clicked Button One" );
     //disable button
     m_ui->inj1Button->setDisabled(true);
-    //send message
-    QByteArray dataIn = *new QByteArray();
-    dataIn = dataIn.fromStdString("1010001\n");
-    sendInjectorMessage(dataIn);
+    //perform action
+    performAction(checked,1);
     //enable and change apperance
     m_ui->inj1Button->setDisabled(false);
     changeInjectorApperence(checked, m_ui->inj1Button,m_ui->inj1ImageLabel,m_ui->inj1Volume);
@@ -199,13 +238,97 @@ void MainWindow::on_inj1Button_clicked(bool checked)
 
 void MainWindow::on_inj2Button_clicked(bool checked)
 {
+    //disable button
+    m_ui->inj2Button->setDisabled(true);
+    //perform action
+    performAction(checked,2);
+    //enable and change apperance
+    m_ui->inj2Button->setDisabled(false);
     changeInjectorApperence(checked, m_ui->inj2Button,m_ui->inj2ImageLabel,m_ui->inj2Volume);
 }
 
 void MainWindow::on_inj3Button_clicked(bool checked)
 {
+    //disable button
+    m_ui->inj3Button->setDisabled(true);
+    //perform action
+    performAction(checked,3);
+    //enable and change apperance
+    m_ui->inj3Button->setDisabled(false);
     changeInjectorApperence(checked, m_ui->inj3Button,m_ui->inj3ImageLabel,m_ui->inj3Volume);
 }
+
+void MainWindow::performAction(bool checked,int injectorNumber){
+    //load settings
+    const SettingsInjectorDialog::InjectorSettings p = m_settingsinjector->settings();
+    qint32 bubbleSteps=0;
+    qint32 speed=0;
+    qint32 injSteps=0;
+    switch (injectorNumber) {
+        case 1:
+            bubbleSteps = volumeToSteps(p.bubbleVolume1,p.speed1);
+            speed = p.speed1;
+            injSteps =volumeToSteps(m_ui->inj1Volume->value(),p.speed1);
+            break;
+        case 2:
+            bubbleSteps = volumeToSteps(p.bubbleVolume2,p.speed2);
+            speed = p.speed2;
+            injSteps = volumeToSteps(m_ui->inj2Volume->value(),p.speed1);
+            break;
+        case 3:
+            bubbleSteps = volumeToSteps(p.bubbleVolume3,p.speed3);
+            speed = p.speed3;
+            injSteps = volumeToSteps(m_ui->inj3Volume->value(),p.speed1);
+            break;
+    }
+    QByteArray dataIn = *new QByteArray();
+    QString qstrInjectorNumber = QString("%1").arg(injectorNumber, 1, 10, QChar('0'));
+    dataIn.append(qstrInjectorNumber);
+    if (checked){ //take up bubble , move down, take up volume, move up
+        //take up bubble
+        moveVolume(dataIn, '1', bubbleSteps, speed);
+        //move down
+        injectorUp(dataIn,false);
+        //take up volume
+        moveVolume(dataIn, '1', injSteps, speed);
+        //move up
+        injectorUp(dataIn,true);
+    } else { //move down, eject bubble and volume together, move up
+        //move down
+        injectorUp(dataIn,false);
+        //eject volume
+        moveVolume(dataIn, '0', injSteps+bubbleSteps, speed);
+        //move up
+        injectorUp(dataIn,true);
+    }
+}
+
+void MainWindow::injectorUp(QByteArray dataIn, bool up){
+    dataIn.chop(dataIn.length()-1);
+    if (up){
+        dataIn.append("2000\n");
+    } else {
+        dataIn.append("0000\n");
+    }
+    sendInjectorMessage(dataIn);
+    //wait one second for move
+    QTime dieTime = QTime::currentTime().addMSecs( 1000 );
+    while( QTime::currentTime() < dieTime ) {
+        QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
+    }
+}
+
+void MainWindow::moveVolume(QByteArray dataIn, char direction, qint32 steps, qint32 speed){
+    dataIn.chop(dataIn.length()-1);
+    dataIn.append(direction);
+    QString qstrVolume = QString("%1").arg(steps, 4, 10, QChar('0'));
+    dataIn.append(qstrVolume);
+    QString qstrSpeed = QString("%1").arg(speed, 1, 10, QChar('0'));
+    dataIn.append(qstrSpeed);
+    dataIn.append("\n");
+    sendInjectorMessage(dataIn);
+}
+
 void MainWindow::sendInjectorMessage(QByteArray dataIn){
     QByteArray dataOut = dataIn;
     dataOut.chop(1);
@@ -229,7 +352,8 @@ void MainWindow::sendInjectorMessage(QByteArray dataIn){
         //need some sort of error signal
     }
 }
-void MainWindow::changeInjectorApperence(bool checked, QPushButton *injectorButton, QLabel *injectorPixelLabel, QSpinBox *injectorVolume){
+
+void MainWindow::changeInjectorApperence(bool checked, QPushButton *injectorButton, QLabel *injectorPixelLabel, QDoubleSpinBox *injectorVolume){
     if (checked){
         injectorButton->setText("Eject");
         injectorPixelLabel->setPixmap(QPixmap(":/images/injector_full.png"));
@@ -239,4 +363,19 @@ void MainWindow::changeInjectorApperence(bool checked, QPushButton *injectorButt
         injectorPixelLabel->setPixmap(QPixmap(":/images/injector_empty.png"));
         injectorVolume->setDisabled(false);
     }
+}
+
+int MainWindow::volumeToSteps(double microlitreVolume,int speed){
+    /* Injector Speed
+     * 0 = Full step      1x
+     * 1 = Half step      2x
+     * 2 = Quarter step   4x
+     * 3 = Eighth step    8x
+     * 4 = Sixteenth step 16x
+     */
+    int factor = 1;
+    factor = factor << speed;
+    double factorD = static_cast<double>(factor);
+    factorD = 0.5 + factorD *  microlitreVolume*SettingsInjectorDialog::MICROLITRE_TO_STEPS;
+    return static_cast<int>(factorD);
 }

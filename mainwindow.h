@@ -100,9 +100,15 @@ private:
     QByteArray lastMessage;
 
 private:
+    int volumeToSteps(double microlitreVolume,int speed);
+    void readSettings();
+    void writeSettings();
+    void performAction(bool checked,int injectorNumber);
     void showStatusMessage(const QString &message);
-    void changeInjectorApperence(bool checked, QPushButton *injectorButton, QLabel *injectorPixelLabel, QSpinBox *injectorVolume);
+    void changeInjectorApperence(bool checked, QPushButton *injectorButton, QLabel *injectorPixelLabel, QDoubleSpinBox *injectorVolume);
     void sendInjectorMessage(QByteArray dataIn);
+    void moveVolume(QByteArray dataIn, char direction, qint32 volume, qint32 speed);
+    void injectorUp(QByteArray dataIn, bool up);
     Ui::MainWindow *m_ui = nullptr;
     QLabel *m_status = nullptr;
     Console *m_console = nullptr;

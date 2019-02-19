@@ -55,6 +55,7 @@
 #include <QIntValidator>
 #include <QLineEdit>
 #include <QSerialPortInfo>
+#include <QSettings>
 
 SettingsInjectorDialog::SettingsInjectorDialog(QWidget *parent) :
     QDialog(parent),
@@ -65,8 +66,7 @@ SettingsInjectorDialog::SettingsInjectorDialog(QWidget *parent) :
 
     connect(m_ui->applyButton, &QPushButton::clicked,
             this, &SettingsInjectorDialog::apply);
-
-    updateSettings();
+    loadSettings();
 }
 
 SettingsInjectorDialog::~SettingsInjectorDialog()
@@ -87,10 +87,44 @@ void SettingsInjectorDialog::apply()
     emit settingsInjectorApplyClicked();
     hide();
 }
-
-void SettingsInjectorDialog::updateSettings()
-{
+void SettingsInjectorDialog::loadSettings(){
+    QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
+    settings.beginGroup("MainWindow");
+    m_ui->inj1_name->setText(settings.value("name1","Forskolin").toString());
+    m_ui->inj2_name->setText(settings.value("name2","IBMX").toString());
+    m_ui->inj3_name->setText(settings.value("name3","Isoproterenol").toString());
+    settings.endGroup();
+    settings.beginGroup("InjectorSettings");
+    m_ui->inj1_Speed->setCurrentIndex(settings.value("speed1",0).toInt());
+    m_ui->inj2_Speed->setCurrentIndex(settings.value("speed2",0).toInt());
+    m_ui->inj3_Speed->setCurrentIndex(settings.value("speed3",0).toInt());
+    m_ui->inj1_BubbleVolume->setValue(settings.value("bubbel1",0.5).toDouble());
+    m_ui->inj2_BubbleVolume->setValue(settings.value("bubbel2",0.5).toDouble());
+    m_ui->inj3_BubbleVolume->setValue(settings.value("bubbel3",0.5).toDouble());
+    settings.endGroup();
+}
+void SettingsInjectorDialog::updateSettings(){
     m_currentSettings.name1 = m_ui->inj1_name->text();
     m_currentSettings.name2 = m_ui->inj2_name->text();
     m_currentSettings.name3 = m_ui->inj3_name->text();
+    m_currentSettings.speed1 = m_ui->inj1_Speed->currentIndex();
+    m_currentSettings.speed2 = m_ui->inj2_Speed->currentIndex();
+    m_currentSettings.speed3 = m_ui->inj3_Speed->currentIndex();
+    m_currentSettings.bubbleVolume1 = m_ui->inj1_BubbleVolume->value(); //nanolitres
+    m_currentSettings.bubbleVolume2 = m_ui->inj2_BubbleVolume->value();
+    m_currentSettings.bubbleVolume3 = m_ui->inj3_BubbleVolume->value();
+    QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
+    settings.beginGroup("MainWindow");
+    settings.setValue("name1",m_currentSettings.name1);
+    settings.setValue("name2",m_currentSettings.name2);
+    settings.setValue("name3",m_currentSettings.name3);
+    settings.endGroup();
+    settings.beginGroup("InjectorSettings");
+    settings.setValue("speed1",m_currentSettings.speed1);
+    settings.setValue("speed2",m_currentSettings.speed2);
+    settings.setValue("speed3",m_currentSettings.speed3);
+    settings.setValue("bubbel1",m_currentSettings.bubbleVolume1);
+    settings.setValue("bubbel2",m_currentSettings.bubbleVolume2);
+    settings.setValue("bubbel3",m_currentSettings.bubbleVolume3);
+    settings.endGroup();
 }

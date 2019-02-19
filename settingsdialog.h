@@ -83,6 +83,7 @@ public:
         QSerialPort::FlowControl flowControl;
         QString stringFlowControl;
         bool localEchoEnabled;
+        bool foundArduino;
     };
 
     explicit SettingsDialog(QWidget *parent = nullptr);
@@ -97,8 +98,8 @@ private slots:
     void checkCustomDevicePathPolicy(int idx);
 
 private:
+    bool fillPortsInfo(QString serialNumberCheck);
     void fillPortsParameters();
-    void fillPortsInfo();
     void updateSettings();
 
 private:

@@ -22,6 +22,9 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="2" column="1">
        <widget class="QPushButton" name="inj1Button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Take-Up</string>
         </property>
@@ -91,8 +94,11 @@
       </item>
       <item row="2" column="3">
        <widget class="QPushButton" name="inj3Button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>Eject</string>
+         <string>Take-Up</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -114,6 +120,9 @@
       </item>
       <item row="2" column="2">
        <widget class="QPushButton" name="inj2Button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Take-Up</string>
         </property>
@@ -125,47 +134,47 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>V(μL)</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="1">
-       <widget class="QSpinBox" name="inj1Volume">
+       <widget class="QDoubleSpinBox" name="inj1Volume">
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
         <property name="maximum">
-         <number>1000000</number>
+         <double>10.000000000000000</double>
         </property>
         <property name="singleStep">
-         <number>100</number>
+         <double>0.100000000000000</double>
         </property>
         <property name="value">
-         <number>2000</number>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>V(nL)</string>
+         <double>1.000000000000000</double>
         </property>
        </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QSpinBox" name="inj2Volume">
+       <widget class="QDoubleSpinBox" name="inj2Volume">
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
         <property name="maximum">
-         <number>1000000</number>
+         <double>10.000000000000000</double>
         </property>
         <property name="singleStep">
-         <number>100</number>
+         <double>0.100000000000000</double>
         </property>
         <property name="value">
-         <number>2000</number>
+         <double>1.000000000000000</double>
         </property>
        </widget>
       </item>
       <item row="3" column="3">
-       <widget class="QSpinBox" name="inj3Volume">
+       <widget class="QDoubleSpinBox" name="inj3Volume">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -173,13 +182,13 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="maximum">
-         <number>1000000</number>
+         <double>10.000000000000000</double>
         </property>
         <property name="singleStep">
-         <number>100</number>
+         <double>0.100000000000000</double>
         </property>
         <property name="value">
-         <number>4500</number>
+         <double>1.000000000000000</double>
         </property>
        </widget>
       </item>
