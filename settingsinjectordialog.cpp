@@ -67,6 +67,7 @@ SettingsInjectorDialog::SettingsInjectorDialog(QWidget *parent) :
     connect(m_ui->applyButton, &QPushButton::clicked,
             this, &SettingsInjectorDialog::apply);
     loadSettings();
+    updateSettings();
 }
 
 SettingsInjectorDialog::~SettingsInjectorDialog()
