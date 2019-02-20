@@ -149,6 +149,14 @@ void MainWindow::openSerialPort()
         showStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
                           .arg(p.name).arg(p.stringBaudRate).arg(p.stringDataBits)
                           .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
+        //store product identifier
+        if (!p.productIdentifier.isEmpty()) {
+            QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
+            settings.beginGroup("SerialSettings");
+            settings.setValue("Product Identifier",p.productIdentifier);
+            settings.endGroup();
+        }
+
     } else {
         QMessageBox::critical(this, tr("Error"), m_serial->errorString());
 
@@ -226,7 +234,6 @@ void MainWindow::showStatusMessage(const QString &message)
 
 void MainWindow::on_inj1Button_clicked(bool checked)
 {
-    qDebug( "Clicked Button One" );
     //disable button
     m_ui->inj1Button->setDisabled(true);
     //perform action

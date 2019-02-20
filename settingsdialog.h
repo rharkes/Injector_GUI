@@ -82,6 +82,7 @@ public:
         QString stringStopBits;
         QSerialPort::FlowControl flowControl;
         QString stringFlowControl;
+        QString productIdentifier;
         bool localEchoEnabled;
         bool foundArduino;
     };

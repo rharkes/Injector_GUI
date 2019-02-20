@@ -87,6 +87,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     updateSettings();
     if (!productIdentifier.isEmpty()&&foundArduino){
         qDebug( "Found Arduino");
+        m_ui->pidFoundLabel->setText(productIdentifier);
         m_currentSettings.foundArduino=true;
     } else {
         m_currentSettings.foundArduino=false;
@@ -241,9 +242,7 @@ void SettingsDialog::updateSettings()
     m_currentSettings.stringFlowControl = m_ui->flowControlBox->currentText();
 
     m_currentSettings.localEchoEnabled = m_ui->localEchoCheckBox->isChecked();
-    QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
-    settings.beginGroup("SerialSettings");
+
     const QStringList list = m_ui->serialPortInfoListBox->itemData(m_ui->serialPortInfoListBox->currentIndex()).toStringList();
-    settings.setValue("Product Identifier",list.count() > 6 ? list.at(6) : tr(blankString));
-    settings.endGroup();
+    m_currentSettings.productIdentifier = list.count() > 6 ? list.at(6) : tr(blankString);
 }
