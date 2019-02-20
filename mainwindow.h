@@ -109,6 +109,7 @@ private:
     void sendInjectorMessage(QByteArray dataIn);
     void moveVolume(QByteArray dataIn, char direction, qint32 volume, qint32 speed);
     void injectorUp(QByteArray dataIn, bool up);
+    void disableButtons(bool disable);
     Ui::MainWindow *m_ui = nullptr;
     QLabel *m_status = nullptr;
     Console *m_console = nullptr;

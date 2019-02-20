@@ -234,38 +234,31 @@ void MainWindow::showStatusMessage(const QString &message)
 
 void MainWindow::on_inj1Button_clicked(bool checked)
 {
-    //disable button
-    m_ui->inj1Button->setDisabled(true);
     //perform action
     performAction(checked,1);
-    //enable and change apperance
-    m_ui->inj1Button->setDisabled(false);
+    //change apperance
     changeInjectorApperence(checked, m_ui->inj1Button,m_ui->inj1ImageLabel,m_ui->inj1Volume);
 }
 
 void MainWindow::on_inj2Button_clicked(bool checked)
 {
-    //disable button
-    m_ui->inj2Button->setDisabled(true);
     //perform action
     performAction(checked,2);
-    //enable and change apperance
-    m_ui->inj2Button->setDisabled(false);
+    //change apperance
     changeInjectorApperence(checked, m_ui->inj2Button,m_ui->inj2ImageLabel,m_ui->inj2Volume);
 }
 
 void MainWindow::on_inj3Button_clicked(bool checked)
 {
-    //disable button
-    m_ui->inj3Button->setDisabled(true);
     //perform action
     performAction(checked,3);
-    //enable and change apperance
-    m_ui->inj3Button->setDisabled(false);
+    //change apperance
     changeInjectorApperence(checked, m_ui->inj3Button,m_ui->inj3ImageLabel,m_ui->inj3Volume);
 }
 
 void MainWindow::performAction(bool checked,int injectorNumber){
+    //disable buttons
+    disableButtons(true);
     //load settings
     const SettingsInjectorDialog::InjectorSettings p = m_settingsinjector->settings();
     qint32 bubbleSteps=0;
@@ -293,33 +286,35 @@ void MainWindow::performAction(bool checked,int injectorNumber){
     dataIn.append(qstrInjectorNumber);
     if (checked){ //take up bubble , move down, take up volume, move up
         //take up bubble
-        moveVolume(dataIn, '1', bubbleSteps, speed);
+        moveVolume(dataIn, '0', bubbleSteps, speed);
         //move down
         injectorUp(dataIn,false);
         //take up volume
-        moveVolume(dataIn, '1', injSteps, speed);
+        moveVolume(dataIn, '0', injSteps, speed);
         //move up
         injectorUp(dataIn,true);
     } else { //move down, eject bubble and volume together, move up
         //move down
         injectorUp(dataIn,false);
         //eject volume
-        moveVolume(dataIn, '0', injSteps+bubbleSteps, speed);
+        moveVolume(dataIn, '1', injSteps+bubbleSteps, speed);
         //move up
         injectorUp(dataIn,true);
     }
+    //enable buttons
+    disableButtons(false);
 }
 
 void MainWindow::injectorUp(QByteArray dataIn, bool up){
     dataIn.chop(dataIn.length()-1);
     if (up){
-        dataIn.append("2000\n");
+        dataIn.append("1000\n"); //should be settable values per injector
     } else {
-        dataIn.append("0000\n");
+        dataIn.append("1800\n");
     }
     sendInjectorMessage(dataIn);
     //wait one second for move
-    QTime dieTime = QTime::currentTime().addMSecs( 1000 );
+    QTime dieTime = QTime::currentTime().addMSecs( 2000 );
     while( QTime::currentTime() < dieTime ) {
         QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
     }
@@ -371,7 +366,11 @@ void MainWindow::changeInjectorApperence(bool checked, QPushButton *injectorButt
         injectorVolume->setDisabled(false);
     }
 }
-
+void MainWindow::disableButtons(bool disable){
+    m_ui->inj1Button->setDisabled(disable);
+    m_ui->inj2Button->setDisabled(disable);
+    m_ui->inj3Button->setDisabled(disable);
+}
 int MainWindow::volumeToSteps(double microlitreVolume,int speed){
     /* Injector Speed
      * 0 = Full step      1x

@@ -71,7 +71,7 @@ class SettingsInjectorDialog : public QDialog
 
 public:
     //  One 1 µL equals 100 full steps
-    constexpr static const double MICROLITRE_TO_STEPS = 100;
+    constexpr static const double MICROLITRE_TO_STEPS = 100; //should be settable in the GUI
     struct InjectorSettings {
         QString name1;
         QString name2;
