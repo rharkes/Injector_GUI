@@ -264,21 +264,25 @@ void MainWindow::performAction(bool checked,int injectorNumber){
     qint32 bubbleSteps=0;
     qint32 speed=0;
     qint32 injSteps=0;
+    qint32 ejectMixSteps=0;
     switch (injectorNumber) {
         case 1:
             bubbleSteps = volumeToSteps(p.bubbleVolume1,p.speed1);
             speed = p.speed1;
             injSteps =volumeToSteps(m_ui->inj1Volume->value(),p.speed1);
+            ejectMixSteps = volumeToSteps(p.ejectMixVolume1,p.speed1);
             break;
         case 2:
             bubbleSteps = volumeToSteps(p.bubbleVolume2,p.speed2);
             speed = p.speed2;
             injSteps = volumeToSteps(m_ui->inj2Volume->value(),p.speed1);
+            ejectMixSteps = volumeToSteps(p.ejectMixVolume2,p.speed2);
             break;
         case 3:
             bubbleSteps = volumeToSteps(p.bubbleVolume3,p.speed3);
             speed = p.speed3;
             injSteps = volumeToSteps(m_ui->inj3Volume->value(),p.speed1);
+            ejectMixSteps = volumeToSteps(p.ejectMixVolume3,p.speed3);
             break;
     }
     QByteArray dataIn = *new QByteArray();
@@ -296,7 +300,10 @@ void MainWindow::performAction(bool checked,int injectorNumber){
     } else { //move down, eject bubble and volume together, move up
         //move down
         injectorUp(dataIn,false);
+        //take-up volume
+        moveVolume(dataIn, '0', ejectMixSteps, speed);
         //eject volume
+        moveVolume(dataIn, '1', ejectMixSteps, speed);
         moveVolume(dataIn, '1', injSteps+bubbleSteps, speed);
         //move up
         injectorUp(dataIn,true);

@@ -63,40 +63,36 @@
      <x>19</x>
      <y>10</y>
      <width>571</width>
-     <height>111</height>
+     <height>119</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="SettingsBox">
-    <item row="1" column="0">
-     <widget class="QLabel" name="injN_label">
+    <item row="2" column="0">
+     <widget class="QLabel" name="speed_label">
       <property name="text">
-       <string>Injector Name</string>
+       <string>Injector Speed</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QLabel" name="inj3_label">
-      <property name="text">
-       <string>Injector 3</string>
+    <item row="3" column="3">
+     <widget class="QDoubleSpinBox" name="inj3_BubbleVolume">
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>0.500000000000000</double>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="inj1_label">
+    <item row="1" column="3">
+     <widget class="QLineEdit" name="inj3_name">
       <property name="text">
-       <string>Injector 1</string>
+       <string>IsoProterenol</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="inj2_label">
-      <property name="text">
-       <string>Injector 2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3">
-     <widget class="QComboBox" name="inj3_Speed">
+    <item row="2" column="2">
+     <widget class="QComboBox" name="inj2_Speed">
       <item>
        <property name="text">
         <string>Fastest</string>
@@ -122,13 +118,6 @@
         <string>Slowest</string>
        </property>
       </item>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="bubbleV_label">
-      <property name="text">
-       <string>Bubble Volume (µL)</string>
-      </property>
      </widget>
     </item>
     <item row="2" column="1">
@@ -167,29 +156,8 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="inj2_name">
-      <property name="text">
-       <string>IBMX</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QLineEdit" name="inj3_name">
-      <property name="text">
-       <string>IsoProterenol</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="injS_label">
-      <property name="text">
-       <string>Injector Speed</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QComboBox" name="inj2_Speed">
+    <item row="2" column="3">
+     <widget class="QComboBox" name="inj3_Speed">
       <item>
        <property name="text">
         <string>Fastest</string>
@@ -240,15 +208,63 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="3">
-     <widget class="QDoubleSpinBox" name="inj3_BubbleVolume">
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-      <property name="value">
-       <double>0.500000000000000</double>
+    <item row="0" column="3">
+     <widget class="QLabel" name="inj3_label">
+      <property name="text">
+       <string>Injector 3</string>
       </property>
      </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="name_label">
+      <property name="text">
+       <string>Injector Name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="bubbleV_label">
+      <property name="text">
+       <string>Bubble Volume (µL)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLineEdit" name="inj2_name">
+      <property name="text">
+       <string>IBMX</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="inj2_label">
+      <property name="text">
+       <string>Injector 2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="inj1_label">
+      <property name="text">
+       <string>Injector 1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="ejectV_label">
+      <property name="text">
+       <string>Eject Mix Volume (µL)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QDoubleSpinBox" name="inj1EjectVolume"/>
+    </item>
+    <item row="4" column="2">
+     <widget class="QDoubleSpinBox" name="inj2EjectVolume"/>
+    </item>
+    <item row="4" column="3">
+     <widget class="QDoubleSpinBox" name="inj3EjectVolume"/>
     </item>
    </layout>
   </widget>

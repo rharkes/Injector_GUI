@@ -70,8 +70,8 @@ class SettingsInjectorDialog : public QDialog
     Q_OBJECT
 
 public:
-    //  One 1 µL equals 100 full steps
-    constexpr static const double MICROLITRE_TO_STEPS = 100; //should be settable in the GUI
+    //  One 1 µL equals 47 full steps
+    constexpr static const double MICROLITRE_TO_STEPS = 47; //should be settable in the GUI
     struct InjectorSettings {
         QString name1;
         QString name2;
@@ -82,9 +82,9 @@ public:
         double bubbleVolume1;
         double bubbleVolume2;
         double bubbleVolume3;
-        double microLitresToSteps1;
-        double microLitresToSteps2;
-        double microLitresToSteps3;
+        double ejectMixVolume1;
+        double ejectMixVolume2;
+        double ejectMixVolume3;
     };
 
     explicit SettingsInjectorDialog(QWidget *parent = nullptr);

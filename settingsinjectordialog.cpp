@@ -114,6 +114,9 @@ void SettingsInjectorDialog::updateSettings(){
     m_currentSettings.bubbleVolume1 = m_ui->inj1_BubbleVolume->value(); //nanolitres
     m_currentSettings.bubbleVolume2 = m_ui->inj2_BubbleVolume->value();
     m_currentSettings.bubbleVolume3 = m_ui->inj3_BubbleVolume->value();
+    m_currentSettings.ejectMixVolume1 = m_ui->inj1EjectVolume->value(); //nanolitres
+    m_currentSettings.ejectMixVolume2 = m_ui->inj2EjectVolume->value();
+    m_currentSettings.ejectMixVolume3 = m_ui->inj3EjectVolume->value();
     QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
     settings.beginGroup("MainWindow");
     settings.setValue("name1",m_currentSettings.name1);
@@ -126,6 +129,9 @@ void SettingsInjectorDialog::updateSettings(){
     settings.setValue("speed3",m_currentSettings.speed3);
     settings.setValue("bubbel1",m_currentSettings.bubbleVolume1);
     settings.setValue("bubbel2",m_currentSettings.bubbleVolume2);
-    settings.setValue("bubbel3",m_currentSettings.bubbleVolume3);
+    settings.setValue("bubbel3",m_currentSettings.bubbleVolume3);    
+    settings.setValue("eject1",m_currentSettings.ejectMixVolume1);
+    settings.setValue("eject2",m_currentSettings.ejectMixVolume2);
+    settings.setValue("eject3",m_currentSettings.ejectMixVolume3);
     settings.endGroup();
 }
