@@ -102,6 +102,15 @@ void SettingsInjectorDialog::loadSettings(){
     m_ui->inj1_BubbleVolume->setValue(settings.value("bubbel1",0.5).toDouble());
     m_ui->inj2_BubbleVolume->setValue(settings.value("bubbel2",0.5).toDouble());
     m_ui->inj3_BubbleVolume->setValue(settings.value("bubbel3",0.5).toDouble());
+    m_ui->inj1EjectVolume->setValue(settings.value("eject1",0).toDouble());
+    m_ui->inj2EjectVolume->setValue(settings.value("eject2",0).toDouble());
+    m_ui->inj3EjectVolume->setValue(settings.value("eject3",0).toDouble());
+    m_ui->inj1PwmUp->setValue(settings.value("pwmUp1",1000).toInt());
+    m_ui->inj2PwmUp->setValue(settings.value("pwmUp2",1000).toInt());
+    m_ui->inj3PwmUp->setValue(settings.value("pwmUp3",1000).toInt());
+    m_ui->inj1PwmDown->setValue(settings.value("pwmDown1",1800).toInt());
+    m_ui->inj2PwmDown->setValue(settings.value("pwmDown2",1800).toInt());
+    m_ui->inj3PwmDown->setValue(settings.value("pwmDown3",1800).toInt());
     settings.endGroup();
 }
 void SettingsInjectorDialog::updateSettings(){
@@ -117,6 +126,12 @@ void SettingsInjectorDialog::updateSettings(){
     m_currentSettings.ejectMixVolume1 = m_ui->inj1EjectVolume->value(); //nanolitres
     m_currentSettings.ejectMixVolume2 = m_ui->inj2EjectVolume->value();
     m_currentSettings.ejectMixVolume3 = m_ui->inj3EjectVolume->value();
+    m_currentSettings.pwmUp1 = m_ui->inj1PwmUp->value(); //nanolitres
+    m_currentSettings.pwmUp2 = m_ui->inj2PwmUp->value();
+    m_currentSettings.pwmUp3 = m_ui->inj3PwmUp->value();
+    m_currentSettings.pwmDown1 = m_ui->inj1PwmDown->value(); //nanolitres
+    m_currentSettings.pwmDown2 = m_ui->inj2PwmDown->value();
+    m_currentSettings.pwmDown3 = m_ui->inj3PwmDown->value();
     QSettings settings("Netherlands Cancer Institute", "JalinkLabInjector");
     settings.beginGroup("MainWindow");
     settings.setValue("name1",m_currentSettings.name1);
@@ -133,5 +148,11 @@ void SettingsInjectorDialog::updateSettings(){
     settings.setValue("eject1",m_currentSettings.ejectMixVolume1);
     settings.setValue("eject2",m_currentSettings.ejectMixVolume2);
     settings.setValue("eject3",m_currentSettings.ejectMixVolume3);
+    settings.setValue("pwmUp1",m_currentSettings.pwmUp1);
+    settings.setValue("pwmUp2",m_currentSettings.pwmUp2);
+    settings.setValue("pwmUp3",m_currentSettings.pwmUp3);
+    settings.setValue("pwmDown1",m_currentSettings.pwmDown1);
+    settings.setValue("pwmDown2",m_currentSettings.pwmDown2);
+    settings.setValue("pwmDown3",m_currentSettings.pwmDown3);
     settings.endGroup();
 }

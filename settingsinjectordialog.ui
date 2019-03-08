@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>200</height>
+    <width>548</width>
+    <height>236</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,8 +29,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>150</y>
-     <width>571</width>
+     <y>190</y>
+     <width>521</width>
      <height>31</height>
     </rect>
    </property>
@@ -62,25 +62,69 @@
     <rect>
      <x>19</x>
      <y>10</y>
-     <width>571</width>
-     <height>119</height>
+     <width>521</width>
+     <height>171</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="SettingsBox">
-    <item row="2" column="0">
-     <widget class="QLabel" name="speed_label">
+    <item row="0" column="1">
+     <widget class="QLabel" name="inj1_label">
       <property name="text">
-       <string>Injector Speed</string>
+       <string>Injector 1</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="3">
-     <widget class="QDoubleSpinBox" name="inj3_BubbleVolume">
+    <item row="0" column="2">
+     <widget class="QLabel" name="inj2_label">
+      <property name="text">
+       <string>Injector 2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QDoubleSpinBox" name="inj1_BubbleVolume">
+      <property name="maximum">
+       <double>10.000000000000000</double>
+      </property>
       <property name="singleStep">
        <double>0.100000000000000</double>
       </property>
       <property name="value">
        <double>0.500000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="inj3_label">
+      <property name="text">
+       <string>Injector 3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="name_label">
+      <property name="text">
+       <string>Injector Name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="inj1_name">
+      <property name="text">
+       <string>Forskolin</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="3">
+     <widget class="QDoubleSpinBox" name="inj3EjectVolume"/>
+    </item>
+    <item row="4" column="2">
+     <widget class="QDoubleSpinBox" name="inj2EjectVolume"/>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLineEdit" name="inj2_name">
+      <property name="text">
+       <string>IBMX</string>
       </property>
      </widget>
     </item>
@@ -91,33 +135,11 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="2">
-     <widget class="QComboBox" name="inj2_Speed">
-      <item>
-       <property name="text">
-        <string>Fastest</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fast</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Normal</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Slow</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Slowest</string>
-       </property>
-      </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="speed_label">
+      <property name="text">
+       <string>Injector Speed</string>
+      </property>
      </widget>
     </item>
     <item row="2" column="1">
@@ -149,11 +171,33 @@
       </item>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="inj1_name">
-      <property name="text">
-       <string>Forskolin</string>
-      </property>
+    <item row="2" column="2">
+     <widget class="QComboBox" name="inj2_Speed">
+      <item>
+       <property name="text">
+        <string>Fastest</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Fast</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Normal</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Slow</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Slowest</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item row="2" column="3">
@@ -185,16 +229,37 @@
       </item>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QDoubleSpinBox" name="inj1_BubbleVolume">
-      <property name="maximum">
-       <double>10.000000000000000</double>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>PWM Up (µs)</string>
       </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="bubbleV_label">
+      <property name="text">
+       <string>Bubble Volume (µL)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QDoubleSpinBox" name="inj3_BubbleVolume">
       <property name="singleStep">
        <double>0.100000000000000</double>
       </property>
       <property name="value">
        <double>0.500000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QDoubleSpinBox" name="inj1EjectVolume"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="ejectV_label">
+      <property name="text">
+       <string>Eject Mix Volume (µL)</string>
       </property>
      </widget>
     </item>
@@ -208,63 +273,72 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QLabel" name="inj3_label">
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>Injector 3</string>
+       <string>PWM Down (µs)</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="name_label">
-      <property name="text">
-       <string>Injector Name</string>
+    <item row="6" column="1">
+     <widget class="QSpinBox" name="inj1PwmDown">
+      <property name="maximum">
+       <number>2000</number>
+      </property>
+      <property name="value">
+       <number>1800</number>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="bubbleV_label">
-      <property name="text">
-       <string>Bubble Volume (µL)</string>
+    <item row="5" column="1">
+     <widget class="QSpinBox" name="inj1PwmUp">
+      <property name="maximum">
+       <number>2000</number>
+      </property>
+      <property name="value">
+       <number>1000</number>
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="inj2_name">
-      <property name="text">
-       <string>IBMX</string>
+    <item row="5" column="2">
+     <widget class="QSpinBox" name="inj2PwmUp">
+      <property name="maximum">
+       <number>2000</number>
+      </property>
+      <property name="value">
+       <number>1000</number>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="inj2_label">
-      <property name="text">
-       <string>Injector 2</string>
+    <item row="6" column="2">
+     <widget class="QSpinBox" name="inj2PwmDown">
+      <property name="maximum">
+       <number>2000</number>
+      </property>
+      <property name="value">
+       <number>1800</number>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="inj1_label">
-      <property name="text">
-       <string>Injector 1</string>
+    <item row="5" column="3">
+     <widget class="QSpinBox" name="inj3PwmUp">
+      <property name="maximum">
+       <number>2000</number>
+      </property>
+      <property name="value">
+       <number>1000</number>
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="ejectV_label">
-      <property name="text">
-       <string>Eject Mix Volume (µL)</string>
+    <item row="6" column="3">
+     <widget class="QSpinBox" name="inj3PwmDown">
+      <property name="maximum">
+       <number>2000</number>
+      </property>
+      <property name="value">
+       <number>1800</number>
       </property>
      </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QDoubleSpinBox" name="inj1EjectVolume"/>
-    </item>
-    <item row="4" column="2">
-     <widget class="QDoubleSpinBox" name="inj2EjectVolume"/>
-    </item>
-    <item row="4" column="3">
-     <widget class="QDoubleSpinBox" name="inj3EjectVolume"/>
     </item>
    </layout>
   </widget>

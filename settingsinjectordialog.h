@@ -85,6 +85,12 @@ public:
         double ejectMixVolume1;
         double ejectMixVolume2;
         double ejectMixVolume3;
+        qint32 pwmUp1;
+        qint32 pwmDown1;
+        qint32 pwmUp2;
+        qint32 pwmDown2;
+        qint32 pwmUp3;
+        qint32 pwmDown3;
     };
 
     explicit SettingsInjectorDialog(QWidget *parent = nullptr);

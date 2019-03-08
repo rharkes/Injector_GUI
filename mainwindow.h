@@ -108,7 +108,7 @@ private:
     void changeInjectorApperence(bool checked, QPushButton *injectorButton, QLabel *injectorPixelLabel, QDoubleSpinBox *injectorVolume);
     void sendInjectorMessage(QByteArray dataIn);
     void moveVolume(QByteArray dataIn, char direction, qint32 volume, qint32 speed);
-    void injectorUp(QByteArray dataIn, bool up);
+    void injectorUp(QByteArray dataIn, bool up,qint32 pwmUp, qint32 pwmDown);
     void disableButtons(bool disable);
     Ui::MainWindow *m_ui = nullptr;
     QLabel *m_status = nullptr;

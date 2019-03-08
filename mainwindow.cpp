@@ -114,8 +114,8 @@ void MainWindow::readSettings()
     m_ui->inj2Volume->setValue(settings.value("volume2",1).toDouble());
     m_ui->inj3Volume->setValue(settings.value("volume3",1).toDouble());
     m_ui->inj1Label->setText(settings.value("name1","Forskolin").toString());
-    m_ui->inj1Label->setText(settings.value("name2","IBMX").toString());
-    m_ui->inj1Label->setText(settings.value("name3","Isoproterenol").toString());
+    m_ui->inj2Label->setText(settings.value("name2","IBMX").toString());
+    m_ui->inj3Label->setText(settings.value("name3","Isoproterenol").toString());
     settings.endGroup();
 }
 
@@ -265,24 +265,32 @@ void MainWindow::performAction(bool checked,int injectorNumber){
     qint32 speed=0;
     qint32 injSteps=0;
     qint32 ejectMixSteps=0;
+    qint32 pwmUp = 0;
+    qint32 pwmDown = 0;
     switch (injectorNumber) {
         case 1:
             bubbleSteps = volumeToSteps(p.bubbleVolume1,p.speed1);
             speed = p.speed1;
             injSteps =volumeToSteps(m_ui->inj1Volume->value(),p.speed1);
             ejectMixSteps = volumeToSteps(p.ejectMixVolume1,p.speed1);
+            pwmUp = p.pwmUp1;
+            pwmDown = p.pwmDown1;
             break;
         case 2:
             bubbleSteps = volumeToSteps(p.bubbleVolume2,p.speed2);
             speed = p.speed2;
             injSteps = volumeToSteps(m_ui->inj2Volume->value(),p.speed1);
             ejectMixSteps = volumeToSteps(p.ejectMixVolume2,p.speed2);
+            pwmUp = p.pwmUp2;
+            pwmDown = p.pwmDown2;
             break;
         case 3:
             bubbleSteps = volumeToSteps(p.bubbleVolume3,p.speed3);
             speed = p.speed3;
             injSteps = volumeToSteps(m_ui->inj3Volume->value(),p.speed1);
             ejectMixSteps = volumeToSteps(p.ejectMixVolume3,p.speed3);
+            pwmUp = p.pwmUp3;
+            pwmDown = p.pwmDown3;
             break;
     }
     QByteArray dataIn = *new QByteArray();
@@ -292,33 +300,33 @@ void MainWindow::performAction(bool checked,int injectorNumber){
         //take up bubble
         moveVolume(dataIn, '0', bubbleSteps, speed);
         //move down
-        injectorUp(dataIn,false);
+        injectorUp(dataIn,false, pwmUp, pwmDown);
         //take up volume
         moveVolume(dataIn, '0', injSteps, speed);
         //move up
-        injectorUp(dataIn,true);
+        injectorUp(dataIn,true, pwmUp, pwmDown);
     } else { //move down, eject bubble and volume together, move up
         //move down
-        injectorUp(dataIn,false);
+        injectorUp(dataIn,false, pwmUp, pwmDown);
         //take-up volume
         moveVolume(dataIn, '0', ejectMixSteps, speed);
         //eject volume
         moveVolume(dataIn, '1', ejectMixSteps, speed);
         moveVolume(dataIn, '1', injSteps+bubbleSteps, speed);
         //move up
-        injectorUp(dataIn,true);
+        injectorUp(dataIn,true, pwmUp, pwmDown);
     }
     //enable buttons
     disableButtons(false);
 }
 
-void MainWindow::injectorUp(QByteArray dataIn, bool up){
+void MainWindow::injectorUp(QByteArray dataIn, bool up,qint32 pwmUp, qint32 pwmDown){
     dataIn.chop(dataIn.length()-1);
+    QString setPWM = QString("%1").arg(pwmDown, 4, 10, QChar('0'));
     if (up){
-        dataIn.append("1000\n"); //should be settable values per injector
-    } else {
-        dataIn.append("1800\n");
+        QString setPWM = QString("%1").arg(pwmUp, 4, 10, QChar('0'));
     }
+    dataIn.append(setPWM);
     sendInjectorMessage(dataIn);
     //wait one second for move
     QTime dieTime = QTime::currentTime().addMSecs( 2000 );
@@ -328,14 +336,21 @@ void MainWindow::injectorUp(QByteArray dataIn, bool up){
 }
 
 void MainWindow::moveVolume(QByteArray dataIn, char direction, qint32 steps, qint32 speed){
-    dataIn.chop(dataIn.length()-1);
-    dataIn.append(direction);
-    QString qstrVolume = QString("%1").arg(steps, 4, 10, QChar('0'));
-    dataIn.append(qstrVolume);
-    QString qstrSpeed = QString("%1").arg(speed, 1, 10, QChar('0'));
-    dataIn.append(qstrSpeed);
-    dataIn.append("\n");
-    sendInjectorMessage(dataIn);
+    while (steps>0){ //injector can take 9999 steps per command
+        qint32 takesteps = steps;
+        if (takesteps>9999){
+            takesteps = 9999;
+        }
+        steps = steps-takesteps;
+        dataIn.chop(dataIn.length()-1);
+        dataIn.append(direction);
+        QString qstrVolume = QString("%1").arg(takesteps, 4, 10, QChar('0')); //number to '0'-padded string of length 4, radix 10
+        dataIn.append(qstrVolume);
+        QString qstrSpeed = QString("%1").arg(speed, 1, 10, QChar('0'));
+        dataIn.append(qstrSpeed);
+        dataIn.append("\n");
+        sendInjectorMessage(dataIn);
+    }
 }
 
 void MainWindow::sendInjectorMessage(QByteArray dataIn){
@@ -387,8 +402,8 @@ int MainWindow::volumeToSteps(double microlitreVolume,int speed){
      * 4 = Sixteenth step 16x
      */
     int factor = 1;
-    factor = factor << speed;
+    factor = factor << speed; //bitshifting of integer == raising to power of 2
     double factorD = static_cast<double>(factor);
-    factorD = 0.5 + factorD *  microlitreVolume*SettingsInjectorDialog::MICROLITRE_TO_STEPS;
+    factorD = 0.5 + factorD *  microlitreVolume*SettingsInjectorDialog::MICROLITRE_TO_STEPS; //round(x) == floor(x+0.5)
     return static_cast<int>(factorD);
 }
