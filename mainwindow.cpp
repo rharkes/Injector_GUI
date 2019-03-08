@@ -327,6 +327,7 @@ void MainWindow::injectorUp(QByteArray dataIn, bool up,qint32 pwmUp, qint32 pwmD
         QString setPWM = QString("%1").arg(pwmUp, 4, 10, QChar('0'));
     }
     dataIn.append(setPWM);
+    dataIn.append("\n");
     sendInjectorMessage(dataIn);
     //wait one second for move
     QTime dieTime = QTime::currentTime().addMSecs( 2000 );
