@@ -99,6 +99,11 @@ void SettingsInjectorDialog::loadSettings(){
     m_ui->inj1_Speed->setCurrentIndex(settings.value("speed1",0).toInt());
     m_ui->inj2_Speed->setCurrentIndex(settings.value("speed2",0).toInt());
     m_ui->inj3_Speed->setCurrentIndex(settings.value("speed3",0).toInt());
+    m_ui->inj1_StepsPerMicroLiter->setValue(settings.value("stepspermicroliter1",47).toDouble());
+    m_ui->inj2_StepsPerMicroLiter->setValue(settings.value("stepspermicroliter2",47).toDouble());
+    m_ui->inj3_StepsPerMicroLiter->setValue(settings.value("stepspermicroliter3",47).toDouble());
+    m_ui->inj2_BubbleVolume->setValue(settings.value("bubbel2",0.5).toDouble());
+    m_ui->inj3_BubbleVolume->setValue(settings.value("bubbel3",0.5).toDouble());
     m_ui->inj1_BubbleVolume->setValue(settings.value("bubbel1",0.5).toDouble());
     m_ui->inj2_BubbleVolume->setValue(settings.value("bubbel2",0.5).toDouble());
     m_ui->inj3_BubbleVolume->setValue(settings.value("bubbel3",0.5).toDouble());
@@ -120,6 +125,9 @@ void SettingsInjectorDialog::updateSettings(){
     m_currentSettings.speed1 = m_ui->inj1_Speed->currentIndex();
     m_currentSettings.speed2 = m_ui->inj2_Speed->currentIndex();
     m_currentSettings.speed3 = m_ui->inj3_Speed->currentIndex();
+    m_currentSettings.stepsPerMicrolitre1 = m_ui->inj1_StepsPerMicroLiter->value(); //steps per microliter
+    m_currentSettings.stepsPerMicrolitre2 = m_ui->inj2_StepsPerMicroLiter->value(); //steps per microliter
+    m_currentSettings.stepsPerMicrolitre3 = m_ui->inj3_StepsPerMicroLiter->value(); //steps per microliter
     m_currentSettings.bubbleVolume1 = m_ui->inj1_BubbleVolume->value(); //nanolitres
     m_currentSettings.bubbleVolume2 = m_ui->inj2_BubbleVolume->value();
     m_currentSettings.bubbleVolume3 = m_ui->inj3_BubbleVolume->value();
@@ -139,6 +147,9 @@ void SettingsInjectorDialog::updateSettings(){
     settings.setValue("name3",m_currentSettings.name3);
     settings.endGroup();
     settings.beginGroup("InjectorSettings");
+    settings.setValue("stepspermicroliter1",m_currentSettings.stepsPerMicrolitre1);
+    settings.setValue("stepspermicroliter2",m_currentSettings.stepsPerMicrolitre2);
+    settings.setValue("stepspermicroliter3",m_currentSettings.stepsPerMicrolitre3);
     settings.setValue("speed1",m_currentSettings.speed1);
     settings.setValue("speed2",m_currentSettings.speed2);
     settings.setValue("speed3",m_currentSettings.speed3);

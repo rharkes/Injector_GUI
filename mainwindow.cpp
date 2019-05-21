@@ -269,26 +269,26 @@ void MainWindow::performAction(bool checked,int injectorNumber){
     qint32 pwmDown = 0;
     switch (injectorNumber) {
         case 1:
-            bubbleSteps = volumeToSteps(p.bubbleVolume1,p.speed1);
+            bubbleSteps = volumeToSteps(p.bubbleVolume1,p.speed1,p.stepsPerMicrolitre1);
             speed = p.speed1;
-            injSteps =volumeToSteps(m_ui->inj1Volume->value(),p.speed1);
-            ejectMixSteps = volumeToSteps(p.ejectMixVolume1,p.speed1);
+            injSteps =volumeToSteps(m_ui->inj1Volume->value(),p.speed1,p.stepsPerMicrolitre1);
+            ejectMixSteps = volumeToSteps(p.ejectMixVolume1,p.speed1,p.stepsPerMicrolitre1);
             pwmUp = p.pwmUp1;
             pwmDown = p.pwmDown1;
             break;
         case 2:
-            bubbleSteps = volumeToSteps(p.bubbleVolume2,p.speed2);
+            bubbleSteps = volumeToSteps(p.bubbleVolume2,p.speed2,p.stepsPerMicrolitre2);
             speed = p.speed2;
-            injSteps = volumeToSteps(m_ui->inj2Volume->value(),p.speed1);
-            ejectMixSteps = volumeToSteps(p.ejectMixVolume2,p.speed2);
+            injSteps = volumeToSteps(m_ui->inj2Volume->value(),p.speed1,p.stepsPerMicrolitre2);
+            ejectMixSteps = volumeToSteps(p.ejectMixVolume2,p.speed2,p.stepsPerMicrolitre2);
             pwmUp = p.pwmUp2;
             pwmDown = p.pwmDown2;
             break;
         case 3:
-            bubbleSteps = volumeToSteps(p.bubbleVolume3,p.speed3);
+            bubbleSteps = volumeToSteps(p.bubbleVolume3,p.speed3,p.stepsPerMicrolitre3);
             speed = p.speed3;
-            injSteps = volumeToSteps(m_ui->inj3Volume->value(),p.speed1);
-            ejectMixSteps = volumeToSteps(p.ejectMixVolume3,p.speed3);
+            injSteps = volumeToSteps(m_ui->inj3Volume->value(),p.speed1,p.stepsPerMicrolitre3);
+            ejectMixSteps = volumeToSteps(p.ejectMixVolume3,p.speed3,p.stepsPerMicrolitre3);
             pwmUp = p.pwmUp3;
             pwmDown = p.pwmDown3;
             break;
@@ -319,12 +319,16 @@ void MainWindow::performAction(bool checked,int injectorNumber){
     //enable buttons
     disableButtons(false);
 }
-
+char* MainWindow::qStringToChar(QString in){
+    QByteArray ba = in.toLocal8Bit();
+    char *c_str2 = ba.data();
+    return c_str2;
+}
 void MainWindow::injectorUp(QByteArray dataIn, bool up,qint32 pwmUp, qint32 pwmDown){
     dataIn.chop(dataIn.length()-1);
     QString setPWM = QString("%1").arg(pwmDown, 4, 10, QChar('0'));
     if (up){
-        QString setPWM = QString("%1").arg(pwmUp, 4, 10, QChar('0'));
+        setPWM = QString("%1").arg(pwmUp, 4, 10, QChar('0'));
     }
     dataIn.append(setPWM);
     dataIn.append("\n");
@@ -394,7 +398,7 @@ void MainWindow::disableButtons(bool disable){
     m_ui->inj2Button->setDisabled(disable);
     m_ui->inj3Button->setDisabled(disable);
 }
-int MainWindow::volumeToSteps(double microlitreVolume,int speed){
+int MainWindow::volumeToSteps(double microlitreVolume,int speed, double stepsPerMicroLiter){
     /* Injector Speed
      * 0 = Full step      1x
      * 1 = Half step      2x
@@ -405,6 +409,6 @@ int MainWindow::volumeToSteps(double microlitreVolume,int speed){
     int factor = 1;
     factor = factor << speed; //bitshifting of integer == raising to power of 2
     double factorD = static_cast<double>(factor);
-    factorD = 0.5 + factorD *  microlitreVolume*SettingsInjectorDialog::MICROLITRE_TO_STEPS; //round(x) == floor(x+0.5)
+    factorD = 0.5 + factorD *  microlitreVolume*stepsPerMicroLiter; //round(x) == floor(x+0.5)
     return static_cast<int>(factorD);
 }

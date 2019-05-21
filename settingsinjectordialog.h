@@ -70,8 +70,6 @@ class SettingsInjectorDialog : public QDialog
     Q_OBJECT
 
 public:
-    //  One 1 µL equals 47 full steps
-    constexpr static const double MICROLITRE_TO_STEPS = 47; //should be settable in the GUI
     struct InjectorSettings {
         QString name1;
         QString name2;
@@ -79,6 +77,9 @@ public:
         qint32 speed1;
         qint32 speed2;
         qint32 speed3;
+        double stepsPerMicrolitre1;
+        double stepsPerMicrolitre2;
+        double stepsPerMicrolitre3;
         double bubbleVolume1;
         double bubbleVolume2;
         double bubbleVolume3;

@@ -100,7 +100,7 @@ private:
     QByteArray lastMessage;
 
 private:
-    int volumeToSteps(double microlitreVolume,int speed);
+    int volumeToSteps(double microlitreVolume,int speed,double stepsPerMicroLiter);
     void readSettings();
     void writeSettings();
     void performAction(bool checked,int injectorNumber);
@@ -110,6 +110,7 @@ private:
     void moveVolume(QByteArray dataIn, char direction, qint32 volume, qint32 speed);
     void injectorUp(QByteArray dataIn, bool up,qint32 pwmUp, qint32 pwmDown);
     void disableButtons(bool disable);
+    char* qStringToChar(QString in);
     Ui::MainWindow *m_ui = nullptr;
     QLabel *m_status = nullptr;
     Console *m_console = nullptr;
